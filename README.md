@@ -3,6 +3,8 @@ Disabler
 
 Disable buttons with loading feedback. Useful for disabling form buttons to prevent submitting duplicate times.
 
+![demo](resources/demo.gif)
+
 ## Usage
 
 ```javascript
@@ -24,7 +26,7 @@ The above will add a disabler to all elements with `.disabler` class once the fo
 
 ## Options
 
-| Option    | Default                | Description
------------------------------------------------------
-| timeout   | 50000                  | Number of miliseconds before re-enabling the button
-| html      | "Loading..."           | Replacement html contents when in disabled state, left blank keeps existing HTML.
+Option    | Default                | Description
+----------|------------------------|-----------------
+timeout   | 50000                  | Number of miliseconds before re-enabling the button
+html      | "Loading..."           | Replacement html contents when in disabled state, left blank keeps existing HTML.
