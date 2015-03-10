@@ -8,7 +8,10 @@ Disable buttons with loading feedback. Useful for disabling form buttons to prev
 ## Usage
 
 ```javascript
-$('button').disabler();
+$('button').disabler({
+	timeout: 50000,
+	html: 'Loading...'
+});
 ```
 
 ## Working with forms
@@ -23,6 +26,10 @@ $('.disabler').each(function() {
 ```
 
 The above will add a disabler to all elements with `.disabler` class once the form is submitted.
+
+### Loading Spinner
+
+By default font awesome is assumed to be available for use in the icon spinner. You can change the loading icon by supplying custom `html` option.
 
 ## Options
 
