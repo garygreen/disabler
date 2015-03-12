@@ -101,7 +101,7 @@ $.fn.disabler = function(options) {
 
 	var namespace = 'disabler';
 
-	$(this).each(function() {
+	return $(this).each(function() {
 
 		var $this = $(this);
 

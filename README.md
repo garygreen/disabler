@@ -17,15 +17,12 @@ $('button').disabler({
 ## Working with forms
 
 ```javascript
-$('.disabler').each(function() {
-	var $btn = $(this);
-	$btn.closest('form').on('submit', function() {
-		$btn.disabler();
-	});
+$('.disabler').on('click', function() {
+	$(this).disabler().closest('form').submit();
 });
 ```
 
-The above will add a disabler to all elements with `.disabler` class once the form is submitted.
+The above will add a disabler to all elements with `.disabler` once clicked and submit the form.
 
 ### Loading Spinner
 
