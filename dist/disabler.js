@@ -44,8 +44,10 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	disable: function() {
-		this.$element.prop('disabled', true);
-		this.addHtml();
+		setTimeout($.proxy(function() {
+			this.$element.prop('disabled', true);
+			this.addHtml();
+		}, this), 0);
 	},
 
 	/**
