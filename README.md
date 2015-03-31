@@ -14,15 +14,19 @@ $('button').disabler({
 });
 ```
 
-## Working with forms
+It's easy to customise the html text displayed by setting up your disabler like so:
 
-```javascript
-$('.disabler').on('click', function() {
-	$(this).disabler().closest('form').submit();
-});
+```html
+<button type="submit" data-disabler="Saving...">Save</button>
 ```
 
-The above will add a disabler to all elements with `.disabler` once clicked and submit the form.
+```javascript
+$('button[data-disabler]').disabler({
+	html: function($btn) {
+		return this.options.icon + ' ' + $btn.data('disabler');
+	}
+});
+```
 
 ### Loading Spinner
 
