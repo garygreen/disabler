@@ -34,8 +34,8 @@ By default font awesome is assumed to be available for use in the icon spinner. 
 
 ## Options
 
-Option    | Type        | Default                 | Description
-----------|------------------------|-----------------------------------
-timeout   | integer     | 50000                   | Number of miliseconds before re-enabling the button
-icon      | string      | "<i class="fa fa-cir.." | Html for the icon
-html      | string, func | "Loading..."           | Replacement html contents when disabled
+Option    | Type         | Default                 | Description
+----------|-----------------------------------------------------------
+timeout   | integer      | 50000                   | Number of miliseconds before re-enabling the button
+icon      | string       | "i class="fa fa-cir.."  | Html for the icon
+html      | string, func | "Loading..."            | Replacement html contents when disabled
