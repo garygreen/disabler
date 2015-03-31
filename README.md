@@ -30,11 +30,12 @@ $('button[data-disabler]').disabler({
 
 ### Loading Spinner
 
-By default font awesome is assumed to be available for use in the icon spinner. You can change the loading icon by supplying custom `html` option.
+By default font awesome is assumed to be available for use in the icon spinner. You can change the loading icon by supplying custom `icon` or completely override `html` option.
 
 ## Options
 
-Option    | Default                | Description
-----------|------------------------|-----------------
-timeout   | 50000                  | Number of miliseconds before re-enabling the button
-html      | "Loading..."           | Replacement html contents when in disabled state, left blank keeps existing HTML.
+Option    | Type        | Default                 | Description
+----------|------------------------|-----------------------------------
+timeout   | integer     | 50000                   | Number of miliseconds before re-enabling the button
+icon      | string      | "<i class="fa fa-cir.." | Html for the icon
+html      | string, func | "Loading..."           | Replacement html contents when disabled
