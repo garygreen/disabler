@@ -25,7 +25,10 @@ Disabler.prototype = {
 
 	defaults: {
 		timeout: 50000,
-		html: '<i class="fa fa-circle-o-notch fa-spin"></i> Loading...'
+		icon: '<i class="fa fa-circle-o-notch fa-spin"></i> ',
+		html: function() {
+			return this.defaults.icon + 'Loading...';
+		}
 	},
 
 	/**
@@ -60,14 +63,28 @@ Disabler.prototype = {
 	},
 
 	/**
+	 * Get html to add
+	 * @return {string}
+	 */
+	getHtml: function() {
+		var html = this.options.html;
+		if ($.isFunction(html))
+		{
+			html = html.call(this, this.$element);
+		}
+		return html;
+	},
+
+	/**
 	 * Add loading html
 	 * @return {void}
 	 */
 	addHtml: function() {
-		if (!this.options.html.length) return false;
+		var html = this.getHtml();
+		if (!html.length) return false;
 		
 		this.oldHtml = this.$element.html();
-		this.$element.html(this.options.html);
+		this.$element.html(html);
 	},
 
 	/**
@@ -101,7 +118,7 @@ $.fn.disabler = function(options) {
 
 	options = options || {};
 
-	var namespace = 'disabler';
+	var namespace = 'ggdisabler';
 
 	return $(this).each(function() {
 
