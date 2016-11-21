@@ -23,11 +23,8 @@ function Disabler(element, options) {
 Disabler.prototype = {
 
 	defaults: {
-		timeout: 50000,
-		icon: '<i class="fa fa-circle-o-notch fa-spin"></i> ',
-		html: function() {
-			return this.defaults.icon + 'Loading...';
-		}
+		timeout: 20000,
+		html: undefined
 	},
 
 	/**
@@ -103,7 +100,7 @@ Disabler.prototype = {
 	 */
 	addHtml: function() {
 		var html = this.getHtml();
-		if (!html.length) return false;
+		if (html.length === undefined) return false;
 
 		this.oldHtml = this.$element.html();
 		this.$element.html(html);
