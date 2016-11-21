@@ -47,22 +47,12 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	bindEvents: function() {
-		this.$element.on('click', $.proxy(this.start, this));
+		this.$element.on('click', $.proxy(this.disable, this));
 	},
 
 	/**
-	 * Start disabler
-	 * @return {void}
-	 */
-	start: function() {
-		this.disable();
-		this.timer = setTimeout($.proxy(function() {
-			this.enable();
-		}, this), this.options.timeout);
-	},
-
-	/**
-	 * Disable
+	 * Disable the element.
+	 *
 	 * @return {void}
 	 */
 	disable: function() {
@@ -70,65 +60,51 @@ Disabler.prototype = {
 			this.$element.prop('disabled', true);
 			this.addHtml();
 		}, this), 0);
+
+		this.timer = setTimeout($.proxy(function() {
+			this.reset();
+		}, this), this.options.timeout);
 	},
 
 	/**
-	 * Enable
-	 * @return {void}
-	 */
-	enable: function() {
-		this.$element.prop('disabled', false);
-		this.removeHtml();
-	},
-
-	/**
-	 * Get html to add
+	 * Get html to add.
+	 *
 	 * @return {string}
 	 */
 	getHtml: function() {
 		var html = this.options.html;
-		if ($.isFunction(html))
-		{
+		if ($.isFunction(html)) {
 			html = html.call(this, this.$element);
 		}
+
 		return html;
 	},
 
 	/**
-	 * Add loading html
+	 * Add loading html.
+	 *
 	 * @return {void}
 	 */
 	addHtml: function() {
 		var html = this.getHtml();
-		if (html.length === undefined) return false;
+		if (html === undefined) return;
 
 		this.oldHtml = this.$element.html();
 		this.$element.html(html);
 	},
 
 	/**
-	 * Remove loading html
+	 * Reset element.
+	 *
 	 * @return {void}
 	 */
-	removeHtml: function() {
-		if (this.oldHtml)
-		{
-			this.$element.html(this.oldHtml);
-			this.oldHtml = '';
-		}
-	},
-
-	/**
-	 * Destroy plugin instance
-	 * @return {void}
-	 */
-	destroy: function() {
-		if (this.timer)
-		{
+	reset: function() {
+		if (this.timer) {
 			clearTimeout(this.timer);
 		}
-		this.enable();
-		this.removeHtml();
+
+		this.$element.prop('disabled', false).html(this.oldHtml);
+		this.oldHtml = '';
 	}
 
 };
@@ -140,22 +116,11 @@ $.fn.disabler = function(options) {
 	var namespace = 'ggdisabler';
 
 	return $(this).each(function() {
-
 		var $this = $(this);
 
-		// Get plugin instance
-		var disabler = $this.data(namespace);
-
-		// Destroy?
-		if (disabler)
-		{
-			disabler.destroy();
-			delete disabler;
+		if (!$this.data(namespace)) {
+			$this.data(namespace, new Disabler(this, options));
 		}
-
-		disabler = new Disabler(this, options);
-		$this.data(namespace, disabler);
-
 	});
 
 };
