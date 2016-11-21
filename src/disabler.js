@@ -16,9 +16,8 @@
 function Disabler(element, options) {
 
 	this.$element = $(element);
-	this.options = $.extend({}, this.defaults, options);
-	this.start();
-
+	this.setOptions(options);
+	this.bindEvents();
 }
 
 Disabler.prototype = {
@@ -29,6 +28,29 @@ Disabler.prototype = {
 		html: function() {
 			return this.defaults.icon + 'Loading...';
 		}
+	},
+
+	/**
+	 * Set the options.
+	 *
+	 * @param {object} options
+	 */
+	setOptions: function(options) {
+		this.options = $.extend({}, this.defaults, options);
+
+		var loadingMessage = this.$element.data('disabler');
+		if (options.html === undefined && loadingMessage !== undefined) {
+			this.options.html = loadingMessage;
+		}
+	},
+
+	/**
+	 * Bind events which trigger disabling the element.
+	 *
+	 * @return {void}
+	 */
+	bindEvents: function() {
+		this.$element.on('click', $.proxy(this.start, this));
 	},
 
 	/**
@@ -82,7 +104,7 @@ Disabler.prototype = {
 	addHtml: function() {
 		var html = this.getHtml();
 		if (!html.length) return false;
-		
+
 		this.oldHtml = this.$element.html();
 		this.$element.html(html);
 	},
