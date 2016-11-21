@@ -47,22 +47,21 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	bindEvents: function() {
-		this.$element.on('click', $.proxy(this.disable, this));
+		this.$element.on('click', $.proxy(this.debounce, this));
 	},
 
 	/**
-	 * Disable the element.
+	 * Debounce disabling/enabling the element.
 	 *
 	 * @return {void}
 	 */
-	disable: function() {
+	debounce: function() {
 		setTimeout($.proxy(function() {
-			this.$element.prop('disabled', true);
-			this.addHtml();
+			this.disable();
 		}, this), 0);
 
 		this.timer = setTimeout($.proxy(function() {
-			this.reset();
+			this.enable();
 		}, this), this.options.timeout);
 	},
 
@@ -81,11 +80,13 @@ Disabler.prototype = {
 	},
 
 	/**
-	 * Add loading html.
+	 * Disable the element.
 	 *
 	 * @return {void}
 	 */
-	addHtml: function() {
+	disable: function() {
+		this.$element.prop('disabled', true);
+
 		var html = this.getHtml();
 		if (html === undefined) return;
 
@@ -94,11 +95,11 @@ Disabler.prototype = {
 	},
 
 	/**
-	 * Reset element.
+	 * Enable the element.
 	 *
 	 * @return {void}
 	 */
-	reset: function() {
+	enable: function() {
 		if (this.timer) {
 			clearTimeout(this.timer);
 		}
