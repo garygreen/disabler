@@ -16,100 +16,96 @@
 function Disabler(element, options) {
 
 	this.$element = $(element);
-	this.options = $.extend({}, this.defaults, options);
-	this.start();
-
+	this.setOptions(options);
+	this.bindEvents();
 }
 
 Disabler.prototype = {
 
 	defaults: {
-		timeout: 50000,
-		icon: '<i class="fa fa-circle-o-notch fa-spin"></i> ',
-		html: function() {
-			return this.defaults.icon + 'Loading...';
+		timeout: 20000,
+		html: undefined
+	},
+
+	/**
+	 * Set the options.
+	 *
+	 * @param {object} options
+	 */
+	setOptions: function(options) {
+		this.options = $.extend({}, this.defaults, options);
+
+		var loadingMessage = this.$element.data('disabler');
+		if (options.html === undefined && loadingMessage !== undefined) {
+			this.options.html = loadingMessage;
 		}
 	},
 
 	/**
-	 * Start disabler
+	 * Bind events which trigger disabling the element.
+	 *
 	 * @return {void}
 	 */
-	start: function() {
-		this.disable();
+	bindEvents: function() {
+		this.$element.on('click', $.proxy(this.debounce, this));
+	},
+
+	/**
+	 * Debounce disabling/enabling the element.
+	 *
+	 * @return {void}
+	 */
+	debounce: function() {
+		setTimeout($.proxy(function() {
+			this.disable();
+		}, this), 0);
+
 		this.timer = setTimeout($.proxy(function() {
 			this.enable();
 		}, this), this.options.timeout);
 	},
 
 	/**
-	 * Disable
-	 * @return {void}
-	 */
-	disable: function() {
-		setTimeout($.proxy(function() {
-			this.$element.prop('disabled', true);
-			this.addHtml();
-		}, this), 0);
-	},
-
-	/**
-	 * Enable
-	 * @return {void}
-	 */
-	enable: function() {
-		this.$element.prop('disabled', false);
-		this.removeHtml();
-	},
-
-	/**
-	 * Get html to add
+	 * Get html to add.
+	 *
 	 * @return {string}
 	 */
 	getHtml: function() {
 		var html = this.options.html;
-		if ($.isFunction(html))
-		{
+		if ($.isFunction(html)) {
 			html = html.call(this, this.$element);
 		}
+
 		return html;
 	},
 
 	/**
-	 * Add loading html
+	 * Disable the element.
+	 *
 	 * @return {void}
 	 */
-	addHtml: function() {
+	disable: function() {
+		this.$element.prop('disabled', true);
+
 		var html = this.getHtml();
-		if (!html.length) return false;
-		
+		if (html === undefined) return;
+
 		this.oldHtml = this.$element.html();
 		this.$element.html(html);
 	},
 
 	/**
-	 * Remove loading html
+	 * Enable the element.
+	 *
 	 * @return {void}
 	 */
-	removeHtml: function() {
-		if (this.oldHtml)
-		{
-			this.$element.html(this.oldHtml);
-			this.oldHtml = '';
-		}
-	},
-
-	/**
-	 * Destroy plugin instance
-	 * @return {void}
-	 */
-	destroy: function() {
-		if (this.timer)
-		{
+	enable: function() {
+		if (this.timer) {
 			clearTimeout(this.timer);
 		}
-		this.enable();
-		this.removeHtml();
+
+		this.$element.prop('disabled', false).html(this.oldHtml);
+		this.oldHtml = '';
 	}
 
 };
@@ -121,22 +117,11 @@ $.fn.disabler = function(options) {
 	var namespace = 'ggdisabler';
 
 	return $(this).each(function() {
-
 		var $this = $(this);
 
-		// Get plugin instance
-		var disabler = $this.data(namespace);
-
-		// Destroy?
-		if (disabler)
-		{
-			disabler.destroy();
-			delete disabler;
+		if (!$this.data(namespace)) {
+			$this.data(namespace, new Disabler(this, options));
 		}
-
-		disabler = new Disabler(this, options);
-		$this.data(namespace, disabler);
-
 	});
 
 };
