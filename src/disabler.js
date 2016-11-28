@@ -36,7 +36,7 @@ Disabler.prototype = {
 		this.options = $.extend({}, this.defaults, options);
 
 		var loadingMessage = this.$element.data('disabler');
-		if (options.html === undefined && loadingMessage !== undefined) {
+		if (options.html === undefined && typeof loadingMessage === 'string' && loadingMessage.length) {
 			this.options.html = loadingMessage;
 		}
 	},
