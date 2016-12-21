@@ -17,10 +17,11 @@ function Disabler(element, options) {
 
 	this.$element = $(element);
 	this.setOptions(options);
-	this.bindEvents();
 
 	if (this.options.auto) {
 		this.debounce();
+	} else {
+		this.bindEvents();
 	}
 }
 
