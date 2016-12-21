@@ -14,15 +14,7 @@
  */
 
 function Disabler(element, options) {
-
-	this.$element = $(element);
-	this.setOptions(options);
-
-	if (this.options.auto) {
-		this.debounce();
-	} else {
-		this.bindEvents();
-	}
+	this.init(element, options);
 }
 
 Disabler.prototype = {
@@ -31,6 +23,25 @@ Disabler.prototype = {
 		timeout: 20000,
 		html: undefined,
 		auto: false
+	},
+
+	/**
+	 * Initialise disabler on element with the given options.
+	 *
+	 * @param  {mixed} element
+	 * @param  {object} options
+	 *
+	 * @return {void}
+	 */
+	init: function(element, options) {
+		this.$element = $(element);
+		this.setOptions(options);
+
+		if (this.options.auto) {
+			this.debounce();
+		} else {
+			this.bindEvents();
+		}
 	},
 
 	/**
@@ -125,7 +136,10 @@ $.fn.disabler = function(options) {
 	return $(this).each(function() {
 		var $this = $(this);
 
-		if (!$this.data(namespace)) {
+		var disabler = $this.data(namespace);
+		if (disabler) {
+			disabler.init(this, options);
+		} else {
 			$this.data(namespace, new Disabler(this, options));
 		}
 	});
