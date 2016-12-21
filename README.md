@@ -26,3 +26,4 @@ Option    | Type         | Default                 | Description
 ----------|--------------|-------------------------|------------------
 timeout   | integer      | 50000                   | Number of miliseconds before re-enabling the button
 html      | string, func | *keep element's text*   | HTML to use for the element when disabled
+auto      | bool         | false                   | Whether to disable the button instantly
