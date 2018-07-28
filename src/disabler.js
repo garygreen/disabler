@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 Gary Green.
+ *  Copyright 2018 Gary Green.
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
@@ -34,7 +34,7 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	init: function(element, options) {
-		this.$element = $(element);
+		this.element = element;
 		this.setOptions(options);
 
 		if (this.options.auto) {
@@ -50,9 +50,9 @@ Disabler.prototype = {
 	 * @param {object} options
 	 */
 	setOptions: function(options) {
-		this.options = $.extend({}, this.defaults, options);
-
-		var loadingMessage = this.$element.data('disabler');
+		this.options = this._simpleMerge(this.defaults, options);
+		
+		var loadingMessage = this.element.getAttribute('data-disabler');
 		if (options.html === undefined && typeof loadingMessage === 'string' && loadingMessage.length) {
 			this.options.html = loadingMessage;
 		}
@@ -64,7 +64,7 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	bindEvents: function() {
-		this.$element.on('click', $.proxy(this.debounce, this));
+		this.element.addEventListener('click', this.debounce.bind(this));
 	},
 
 	/**
@@ -73,13 +73,8 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	debounce: function() {
-		setTimeout($.proxy(function() {
-			this.disable();
-		}, this), 0);
-
-		this.timer = setTimeout($.proxy(function() {
-			this.enable();
-		}, this), this.options.timeout);
+		setTimeout(this.disable.bind(this), 0);
+		this.timer = setTimeout(this.enable.bind(this), this.options.timeout);
 	},
 
 	/**
@@ -89,8 +84,8 @@ Disabler.prototype = {
 	 */
 	getHtml: function() {
 		var html = this.options.html;
-		if ($.isFunction(html)) {
-			html = html.call(this, this.$element);
+		if (typeof html === 'function') {
+			html = html.call(this, this.element);
 		}
 
 		return html;
@@ -102,13 +97,13 @@ Disabler.prototype = {
 	 * @return {void}
 	 */
 	disable: function() {
-		this.$element.prop('disabled', true);
+		this.element.disabled = true;
 
 		var html = this.getHtml();
 		if (html === undefined) return;
 
-		this.oldHtml = this.$element.html();
-		this.$element.html(html);
+		this.oldHtml = this.element.innerHTML;
+		this.element.innerHTML = html;
 	},
 
 	/**
@@ -121,27 +116,21 @@ Disabler.prototype = {
 			clearTimeout(this.timer);
 		}
 
-		this.$element.prop('disabled', false).html(this.oldHtml);
+		this.element.disabled = false;
+		this.element.innerHTML = this.oldHtml;
 		this.oldHtml = '';
-	}
+	},
 
-};
+	_simpleMerge: function(obj1, obj2) {
+		// It be nice to use Object.assign to avoid haing to write this function
+		// but unfortunately IE11 doesn't support it.
+		var ret = Object.create(obj1), prop;
 
-$.fn.disabler = function(options) {
-
-	options = options || {};
-
-	var namespace = 'ggdisabler';
-
-	return $(this).each(function() {
-		var $this = $(this);
-
-		var disabler = $this.data(namespace);
-		if (disabler) {
-			disabler.init(this, options);
-		} else {
-			$this.data(namespace, new Disabler(this, options));
+		for (prop in obj2) {
+			ret[prop] = obj2[prop];
 		}
-	});
+
+		return ret;
+	}
 
 };
