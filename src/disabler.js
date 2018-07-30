@@ -134,3 +134,5 @@ Disabler.prototype = {
 	}
 
 };
+
+export default Disabler;
