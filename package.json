@@ -1,6 +1,6 @@
 {
   "name": "disabler",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Disable buttons, preventing duplicate form submissions.",
   "author": "Gary Green",
   "main": "src/disabler.js",
