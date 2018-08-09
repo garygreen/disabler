@@ -38,7 +38,7 @@ var Disabler = (function () {
 		 */
 		init: function(element, options) {
 			this.element = element;
-			this.setOptions(options);
+			this.setOptions(options || {});
 
 			if (this.options.auto) {
 				this.debounce();
@@ -120,8 +120,11 @@ var Disabler = (function () {
 			}
 
 			this.element.disabled = false;
-			this.element.innerHTML = this.oldHtml;
-			this.oldHtml = '';
+
+			if (this.oldHtml !== undefined) {
+				this.element.innerHTML = this.oldHtml;		
+				this.oldHtml = undefined;
+			}
 		},
 
 		_simpleMerge: function(obj1, obj2) {
